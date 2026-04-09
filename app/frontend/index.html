@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WB Logistics Forecast</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="icon" href="/static/truck.ico" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Wildhack</div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Территория умной логистики</p>
+      <h1>
+        Сервис прогноза отгрузок и
+        <br />
+        автоматического вызова транспорта
+      </h1>
+      <p class="accent">Всё зависит от точного прогноза</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-left">
+        <h2>Запрос прогноза</h2>
+        <p class="panel-text">
+          Введите маршрут и момент времени. Сервис сам восстановит склад,
+          поднимет исторические данные и вернёт прогноз и решение по транспорту.
+        </p>
+
+        <form id="predictForm" class="form">
+          <label class="field">
+            <span>Маршрут</span>
+            <input
+              type="number"
+              id="route_id"
+              name="route_id"
+              placeholder="Например, 12345"
+              required
+            />
+          </label>
+
+          <label class="field">
+            <span>Дата и время прогноза</span>
+            <input
+              type="datetime-local"
+              id="timestamp"
+              name="timestamp"
+              required
+            />
+            <small class="field-hint">
+              Минимальная дата для прогноза: 2025-05-30 11:00
+            </small>
+          </label>
+
+          <div class="fleet-block">
+            <h3 class="fleet-title">Доступный автопарк</h3>
+            <p class="fleet-subtitle">
+              Укажи количество доступных машин каждого типа.
+            </p>
+
+            <div class="fleet-grid">
+              <label class="fleet-item">
+                <div class="fleet-info">
+                  <div class="fleet-icon">🚚</div>
+                  <div class="fleet-text">
+                    <span class="fleet-name">10 тонн</span>
+                  </div>
+                </div>
+                <input type="number" id="fleet_10t" name="fleet_10t" min="0" value="0" />
+              </label>
+
+              <label class="fleet-item">
+                <div class="fleet-info">
+                  <div class="fleet-icon">🚛</div>
+                  <div class="fleet-text">
+                    <span class="fleet-name">20 тонн (82 м³)</span>
+                  </div>
+                </div>
+                <input type="number" id="fleet_20t_82" name="fleet_20t_82" min="0" value="0" />
+              </label>
+
+              <label class="fleet-item">
+                <div class="fleet-info">
+                  <div class="fleet-icon">🚛</div>
+                  <div class="fleet-text">
+                    <span class="fleet-name">20 тонн (90 м³)</span>
+                  </div>
+                </div>
+                <input type="number" id="fleet_20t_90" name="fleet_20t_90" min="0" value="0" />
+              </label>
+
+              <label class="fleet-item">
+                <div class="fleet-info">
+                  <div class="fleet-icon">🚛</div>
+                  <div class="fleet-text">
+                    <span class="fleet-name">Сцепка 20 тонн (120 м³)</span>
+                  </div>
+                </div>
+                <input type="number" id="fleet_20t_120" name="fleet_20t_120" min="0" value="0" />
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" id="submitBtn" class="submit-btn">
+            Получить прогноз
+          </button>
+        </form>
+
+        <div id="loading" class="loading hidden">Выполняется запрос...</div>
+        <div id="errorBox" class="error-box hidden"></div>
+      </div>
+
+      <div class="panel-right">
+        <div id="resultCard" class="result-card hidden">
+          <div class="result-top">
+            <p class="result-eyebrow">Результат расчёта</p>
+            <h3>Операционное решение</h3>
+          </div>
+
+          <div class="result-grid">
+            <div class="metric">
+              <span class="metric-label">Маршрут</span>
+              <span class="metric-value" id="result_route_id">—</span>
+            </div>
+
+            <div class="metric">
+              <span class="metric-label">Склад</span>
+              <span class="metric-value" id="result_office_from_id">—</span>
+            </div>
+
+            <div class="metric metric-wide">
+              <span class="metric-label">Прогноз target_2h</span>
+              <span class="metric-value big" id="result_predicted_target_2h">—</span>
+            </div>
+
+            <div class="metric">
+              <span class="metric-label">Требуется паллето-мест</span>
+              <span class="metric-value" id="result_required_capacity">—</span>
+            </div>
+
+            <div class="metric metric-wide">
+              <span class="metric-label">Подобранный транспорт</span>
+              <div class="fleet-result" id="result_allocated_vehicles">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="placeholderCard" class="placeholder-card">
+          <p class="placeholder-small">WB Logistics AI</p>
+          <h3>
+            Здесь появится прогноз,
+            <br />
+            как только ты отправишь запрос
+          </h3>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

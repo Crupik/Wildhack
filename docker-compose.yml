@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  wb-forecast:
+    build: .
+    container_name: wb-forecast
+    ports:
+      - "8000:8000"
